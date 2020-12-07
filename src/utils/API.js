@@ -1,9 +1,9 @@
 import axios from "axios";
-const BASEURL = "https://www.omdbapi.com/?t=";
-const APIKEY = "&apikey=trilogy";
-
+const BASEURL = "https://dummyapi.io/data/api/user?limit=20";
+const APPID = "5fcd81ef78c44ac777e4ad92";
+// eslint-disable-next-line
 export default {
-    search: function (query) {
-        return axios.get(BASEURL + query + APIKEY);
+    users: function () {
+        return axios.get(BASEURL, { headers: { 'app-id': APPID } })
     }
 };
