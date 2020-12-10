@@ -5,4 +5,5 @@ function App() {
     return <OmdbContainer />;
 }
 
+
 export default App;

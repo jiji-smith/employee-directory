@@ -11,7 +11,7 @@ class OmdbContainer extends Component {
         search: ""
     };
 
-    // When this component mounts, search for the movie "The Matrix"
+    // When this component mounts, search for the users
     componentDidMount() {
         this.searchusers();
     }
@@ -30,11 +30,11 @@ class OmdbContainer extends Component {
         });
     };
 
-    // When the form is submitted, search the OMDB API for the value of `this.state.search`
-    // handleFormSubmit = event => {
-    //     event.preventDefault();
-    //     this.searchMovies(this.state.search);
-    // };
+    // When the form is submitted, search the OMDB API for the value of `this.state.search` // 이걸지웠음
+    handleFormSubmit = event => {
+        event.preventDefault();
+        this.searchusers(this.state.search); // 이걸 유저들로 바꿈
+    };
 
     render() {
         return (
@@ -45,13 +45,13 @@ class OmdbContainer extends Component {
                             <SearchForm
                                 value={this.state.search}
                                 handleInputChange={this.handleInputChange}
-                                // handleFormSubmit={this.handleFormSubmit}
+                                handleFormSubmit={this.handleFormSubmit} // 왜 이걸지웠지
                             />
                         </Card>
                     </div>
                     <div>
                         <Card
-                            heading={this.state.result.Title || "Search for a Movie to Begin"}
+                            heading={this.state.result.Title || "Search for a Users"}
                         >
                             <table style={{width: "100%"}}>
                                 <thead>
