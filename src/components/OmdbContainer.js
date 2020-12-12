@@ -18,7 +18,14 @@ class OmdbContainer extends Component {
 
     searchusers = () => {
         API.users()
-            .then(res => this.setState({ result: res.data.data }))
+            .then(res => {
+                console.log(`response: ${JSON.stringify(res)}`)
+                //res.data.data =  [{}id: '123', name: 'taylor', {}, {}]
+                //figure out a way to filter the array of users to only get katie
+                //only save the matching results to state
+                // matchedResults = filterResults(userArray)
+                this.setState({ result: res.data.data})
+            })
             .catch(err => console.log(err));
     };
 
@@ -37,6 +44,7 @@ class OmdbContainer extends Component {
     };
 
     render() {
+
         return (
             <Container>
                 <div>
@@ -49,6 +57,8 @@ class OmdbContainer extends Component {
                             />
                         </Card>
                     </div>
+
+
                     <div>
                         <Card
                             heading={this.state.result.Title || "Search for a Users"}
