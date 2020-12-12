@@ -2,33 +2,35 @@ import React, { Component } from "react";
 import Container from "./Container";
 import Card from "./Card";
 import SearchForm from "./SearchForm";
-import MovieDetail from "./MovieDetail";
 import API from "../utils/API";
-
 class OmdbContainer extends Component {
     state = {
         result: [],
-        search: ""
+        search: "",
+        searchResults: []
     };
-
     // When this component mounts, search for the users
     componentDidMount() {
         this.searchusers();
     }
-
+    // Method that executes every time the component re-renders (i.e. prop or state changes)
+    componentDidUpdate() {
+      console.log(this.state.searchResults)
+    }
     searchusers = () => {
         API.users()
-            .then(res => {
-                console.log(`response: ${JSON.stringify(res)}`)
-                //res.data.data =  [{}id: '123', name: 'taylor', {}, {}]
-                //figure out a way to filter the array of users to only get katie
-                //only save the matching results to state
-                // matchedResults = filterResults(userArray)
-                this.setState({ result: res.data.data})
-            })
+            .then(res => this.setState({ result: res.data.data }))
             .catch(err => console.log(err));
     };
-
+    handleSearch = () => {
+      if (this.state.result.length === 0) return;
+        this.setState({
+          searchResults: this.state.result.filter(el => {
+            if (el.firstName === this.state.search) return true;
+            return false;
+          })
+        })
+    }
     handleInputChange = event => {
         const value = event.target.value;
         const name = event.target.name;
@@ -36,15 +38,12 @@ class OmdbContainer extends Component {
             [name]: value
         });
     };
-
     // When the form is submitted, search the OMDB API for the value of `this.state.search` // 이걸지웠음
     handleFormSubmit = event => {
         event.preventDefault();
-        this.searchusers(this.state.search); // 이걸 유저들로 바꿈
+        this.handleSearch(this.state.search); // 이걸 유저들로 바꿈
     };
-
     render() {
-
         return (
             <Container>
                 <div>
@@ -57,8 +56,6 @@ class OmdbContainer extends Component {
                             />
                         </Card>
                     </div>
-
-
                     <div>
                         <Card
                             heading={this.state.result.Title || "Search for a Users"}
@@ -73,7 +70,6 @@ class OmdbContainer extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     {this.state.result.length ? this.state.result.map(user => (
                                         <tr>
                                             <td><img src= {user.picture}></img></td>
@@ -93,5 +89,4 @@ class OmdbContainer extends Component {
         );
     }
 }
-
 export default OmdbContainer;
