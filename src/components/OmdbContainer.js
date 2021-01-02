@@ -15,20 +15,22 @@ class OmdbContainer extends Component {
     }
     // Method that executes every time the component re-renders (i.e. prop or state changes)
     componentDidUpdate() {
-      console.log(this.state.searchResults)
+        console.log(this.state.searchResults)
     }
     searchusers = () => {
         API.users()
-            .then(res => this.setState({ result: res.data.data }))
+            .then(res => this.setState({ result: res.data.data, searchResults: res.data.data}))
             .catch(err => console.log(err));
     };
     handleSearch = () => {
-      if (this.state.result.length === 0) return;
-        this.setState({
-          searchResults: this.state.result.filter(el => {
+        if (this.state.result.length === 0) return;
+        const filterResult = this.state.result.filter(el => {
             if (el.firstName === this.state.search) return true;
             return false;
-          })
+
+        })
+        this.setState({
+            searchResults: filterResult
         })
     }
     handleInputChange = event => {
@@ -36,12 +38,19 @@ class OmdbContainer extends Component {
         const name = event.target.name;
         this.setState({
             [name]: value
+        }, ()=> {
+            //callback function 에 넣어서 state가 바뀐 후 다시 돌아오고 싶을때 setState로 다시 원래 결과를 돌려놓는다.
+            if (!this.state.search) {
+                this.setState({
+                    searchResults: this.state.result
+                })
+            }
         });
     };
     // When the form is submitted, search the OMDB API for the value of `this.state.search` // 이걸지웠음
     handleFormSubmit = event => {
         event.preventDefault();
-        this.handleSearch(this.state.search); // 이걸 유저들로 바꿈
+        this.handleSearch(this.state.search); // handleSearch로 바뀜
     };
     render() {
         return (
@@ -52,7 +61,7 @@ class OmdbContainer extends Component {
                             <SearchForm
                                 value={this.state.search}
                                 handleInputChange={this.handleInputChange}
-                                handleFormSubmit={this.handleFormSubmit} // 왜 이걸지웠지
+                                handleFormSubmit={this.handleFormSubmit}
                             />
                         </Card>
                     </div>
@@ -60,7 +69,7 @@ class OmdbContainer extends Component {
                         <Card
                             heading={this.state.result.Title || "Search for a Users"}
                         >
-                            <table style={{width: "100%"}}>
+                            <table style={{ width: "100%" }}>
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -70,9 +79,9 @@ class OmdbContainer extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.result.length ? this.state.result.map(user => (
+                                    {this.state.result.length ? this.state.searchResults.map(user => (
                                         <tr>
-                                            <td><img src= {user.picture}></img></td>
+                                            <td><img src={user.picture}></img></td>
                                             <td>{user.firstName}</td>
                                             <td>{user.lastName}</td>
                                             <td>{user.email}</td>
